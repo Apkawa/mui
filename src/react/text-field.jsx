@@ -8,7 +8,7 @@
 import React from 'react';
 
 import * as util from '../js/lib/util';
-import { controlledMessage } from './_helpers';
+import {controlledMessage} from './_helpers';
 
 
 const PropTypes = React.PropTypes;
@@ -19,115 +19,122 @@ const PropTypes = React.PropTypes;
  * @class
  */
 class Input extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    let value = props.value;
-    let innerValue = value || props.defaultValue;
+        let value = props.value;
+        let innerValue = value || props.defaultValue;
 
-    if (innerValue === undefined) innerValue = '';
+        if (innerValue === undefined) innerValue = '';
 
-    this.state = {
-      innerValue: innerValue,
-      isDirty: Boolean(innerValue.toString())
+        this.state = {
+            innerValue: innerValue,
+            isDirty: Boolean(innerValue.toString())
+        };
+
+        // warn if value defined but onChange is not
+        if (value !== undefined && !props.onChange) {
+            util.raiseError(controlledMessage, true);
+        }
+
+        let cb = util.callback;
+        this.onChangeCB = cb(this, 'onChange');
+        this.onFocusCB = cb(this, 'onFocus');
+    }
+
+    static propTypes = {
+        hint: PropTypes.string,
+        invalid: PropTypes.bool,
+        rows: PropTypes.number,
+        renderInput: PropTypes.func,
+
+
     };
 
-    // warn if value defined but onChange is not
-    if (value !== undefined && !props.onChange) {
-      util.raiseError(controlledMessage, true);
+    static defaultProps = {
+        hint: null,
+        invalid: false,
+        rows: 2
+    };
+
+    componentDidMount() {
+        // disable MUI js
+        this.refs.inputEl._muiTextfield = true;
     }
 
-    let cb = util.callback;
-    this.onChangeCB = cb(this, 'onChange');
-    this.onFocusCB = cb(this, 'onFocus');
-  }
-
-  static propTypes = {
-    hint: PropTypes.string,
-    invalid: PropTypes.bool,
-    rows: PropTypes.number
-  };
-
-  static defaultProps = {
-    hint: null,
-    invalid: false,
-    rows: 2
-  };
-
-  componentDidMount() {
-    // disable MUI js
-    this.refs.inputEl._muiTextfield = true;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // update innerValue when new value is received to handle programmatic
-    // changes to input box
-    if ('value' in nextProps) this.setState({innerValue: nextProps.value});
-  }
-
-  onChange(ev) {
-    this.setState({innerValue: ev.target.value});
-
-    // execute callback
-    let fn = this.props.onChange;
-    fn && fn(ev);
-  }
-
-  onFocus(ev) {
-    this.setState({isDirty: true});
-
-    // execute callback
-    let fn = this.props.onFocus;
-    fn && fn(ev);
-  }
-
-  triggerFocus() {
-    // hack to enable IE10 pointer-events shim
-    this.refs.inputEl.focus();
-  }
-
-  render() {
-    let cls = {},
-        isNotEmpty = Boolean(this.state.innerValue.toString()),
-        inputEl;
-
-    const { hint, invalid, rows, type, ...reactProps } = this.props;
-
-    cls['mui--is-empty'] = !isNotEmpty;
-    cls['mui--is-not-empty'] = isNotEmpty;
-    cls['mui--is-dirty'] = this.state.isDirty;
-    cls['mui--is-invalid'] = invalid;
-
-    cls = util.classNames(cls);
-
-    if (type === 'textarea') {
-      inputEl = (
-        <textarea
-          { ...reactProps }
-          ref="inputEl"
-          className={cls}
-          rows={rows}
-          placeholder={hint}
-          onChange={this.onChangeCB}
-          onFocus={this.onFocusCB}
-        />
-      );
-    } else {
-      inputEl = (
-        <input
-          { ...reactProps }
-          ref="inputEl"
-          className={cls}
-          type={type}
-          placeholder={this.props.hint}
-          onChange={this.onChangeCB}
-          onFocus={this.onFocusCB}
-        />
-      );
+    componentWillReceiveProps(nextProps) {
+        // update innerValue when new value is received to handle programmatic
+        // changes to input box
+        if ('value' in nextProps) this.setState({innerValue: nextProps.value});
     }
 
-    return inputEl;
-  }
+    onChange(ev) {
+        this.setState({innerValue: ev.target.value});
+
+        // execute callback
+        let fn = this.props.onChange;
+        fn && fn(ev);
+    }
+
+    onFocus(ev) {
+        this.setState({isDirty: true});
+
+        // execute callback
+        let fn = this.props.onFocus;
+        fn && fn(ev);
+    }
+
+    triggerFocus() {
+        // hack to enable IE10 pointer-events shim
+        this.refs.inputEl.focus();
+    }
+
+    render() {
+        let cls = {},
+            isNotEmpty = Boolean(this.state.innerValue.toString()),
+            inputEl;
+
+        const {hint, invalid, rows, type, renderInput, ...reactProps} = this.props;
+
+        cls['mui--is-empty'] = !isNotEmpty;
+        cls['mui--is-not-empty'] = isNotEmpty;
+        cls['mui--is-dirty'] = this.state.isDirty;
+        cls['mui--is-invalid'] = invalid;
+
+        cls = util.classNames(cls);
+
+        const inputProps = {
+            ...reactProps,
+            className: cls,
+            ref: "inputEl",
+            placeholder: hint,
+            onChange: this.onChangeCB,
+            onFocus: this.onFocusCB,
+        }
+
+        if (renderInput) {
+            return renderInput({...inputProps, type, rows})
+        }
+
+        if (type === 'textarea') {
+
+            inputEl = (
+                <textarea
+                    {...inputProps}
+                    rows={rows}
+                />
+            );
+        } else {
+            inputEl = (
+                <input
+                    { ...inputProps }
+                    type={type}
+                />
+            );
+        }
+
+        return inputEl;
+    }
 }
 
 
@@ -136,47 +143,47 @@ class Input extends React.Component {
  * @class
  */
 class Label extends React.Component {
-  state = {
-    style: {}
-  };
+    state = {
+        style: {}
+    };
 
-  static defaultProps = {
-    text: '',
-    onClick: null
-  };
+    static defaultProps = {
+        text: '',
+        onClick: null
+    };
 
-  componentDidMount() {
-    this.styleTimer = setTimeout(() => {
-      const s = '.15s ease-out';
-      let style;
+    componentDidMount() {
+        this.styleTimer = setTimeout(() => {
+            const s = '.15s ease-out';
+            let style;
 
-      style = {
-        transition: s,
-        WebkitTransition: s,
-        MozTransition: s,
-        OTransition: s,
-        msTransform: s
-      };
+            style = {
+                transition: s,
+                WebkitTransition: s,
+                MozTransition: s,
+                OTransition: s,
+                msTransform: s
+            };
 
-      this.setState({style});
-    }, 150);
-  }
+            this.setState({style});
+        }, 150);
+    }
 
-  componentWillUnmount() {
-    // clear timer
-    clearTimeout(this.styleTimer);
-  }
+    componentWillUnmount() {
+        // clear timer
+        clearTimeout(this.styleTimer);
+    }
 
-  render() {
-    return (
-      <label
-        style={this.state.style}
-        onClick={this.props.onClick}
-      >
-        {this.props.text}
-      </label>
-    );
-  }
+    render() {
+        return (
+            <label
+                style={this.state.style}
+                onClick={this.props.onClick}
+            >
+                {this.props.text}
+            </label>
+        );
+    }
 }
 
 
@@ -185,59 +192,60 @@ class Label extends React.Component {
  * @class
  */
 class TextField extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.onClickCB = util.callback(this, 'onClick');
-  }
-
-  static propTypes = {
-    label: PropTypes.string,
-    floatingLabel: PropTypes.bool
-  };
-
-  static defaultProps = {
-    className: '',
-    label: '',
-    floatingLabel: false
-  };
-
-  onClick(ev) {
-    // pointer-events shim
-    if (util.supportsPointerEvents() === false) {
-      ev.target.style.cursor = 'text';
-      this.refs.inputEl.triggerFocus();
-    }
-  }
-
-  render() {
-    let cls = {},
-        labelEl;
-
-    const { children, className, style, label, floatingLabel,
-      ...other } = this.props;
-
-    if (label.length) {
-      labelEl = <Label text={label} onClick={this.onClickCB} />;
+        this.onClickCB = util.callback(this, 'onClick');
     }
 
-    cls['mui-textfield'] = true;
-    cls['mui-textfield--float-label'] = floatingLabel;
-    cls = util.classNames(cls);
+    static propTypes = {
+        label: PropTypes.string,
+        floatingLabel: PropTypes.bool
+    };
 
-    return (
-      <div
-        className={cls + ' ' + className}
-        style={style}
-      >
-        <Input ref="inputEl" { ...other } />
-        {labelEl}
-      </div>
-    );
-  }
+    static defaultProps = {
+        className: '',
+        label: '',
+        floatingLabel: false
+    };
+
+    onClick(ev) {
+        // pointer-events shim
+        if (util.supportsPointerEvents() === false) {
+            ev.target.style.cursor = 'text';
+            this.refs.inputEl.triggerFocus();
+        }
+    }
+
+    render() {
+        let cls = {},
+            labelEl;
+
+        const {
+            children, className, style, label, floatingLabel,
+            ...other
+        } = this.props;
+
+        if (label.length) {
+            labelEl = <Label text={label} onClick={this.onClickCB}/>;
+        }
+
+        cls['mui-textfield'] = true;
+        cls['mui-textfield--float-label'] = floatingLabel;
+        cls = util.classNames(cls);
+
+        return (
+            <div
+                className={cls + ' ' + className}
+                style={style}
+            >
+                <Input ref="inputEl" { ...other } />
+                {labelEl}
+            </div>
+        );
+    }
 }
 
 
-
 /** Define module API */
-export { TextField };
+export {TextField};

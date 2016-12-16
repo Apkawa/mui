@@ -1,6 +1,6 @@
 {
-  "name": "muicss",
-  "version": "0.9.6",
+  "name": "apkawa-muicss",
+  "version": "0.9.8",
   "license": "MIT",
   "description": "Lightweight CSS framework based on Google's Material Design guidelines",
   "keywords": [
