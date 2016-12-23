@@ -1,4 +1,4 @@
-/**                                                                            
+/**
  * MUI React Input Component
  * @module react/input
  */
@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { TextField } from './text-field';
+import {TextField} from './text-field';
 
 
 const PropTypes = React.PropTypes;
@@ -18,17 +18,17 @@ const PropTypes = React.PropTypes;
  * @class
  */
 class Input extends React.Component {
-  static propTypes = {
-    type: PropTypes.oneOf(['text', 'email', 'url', 'tel', 'password'])
-  };
+    static propTypes = {
+        type: PropTypes.oneOf(['text', 'email', 'url', 'tel', 'password', 'date', 'time', 'datetime-local'])
+    };
 
-  static defaultProps = {
-    type: 'text'
-  };
+    static defaultProps = {
+        type: 'text'
+    };
 
-  render() {
-    return <TextField { ...this.props } />;
-  }
+    render() {
+        return <TextField { ...this.props } />;
+    }
 }
 
 
