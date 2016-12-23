@@ -1301,7 +1301,7 @@ var Input = function (_React$Component) {
         key: 'render',
         value: function render() {
             var cls = {},
-                isNotEmpty = Boolean(this.state.innerValue.toString()),
+                isNotEmpty = Boolean((this.state.innerValue || "").toString()),
                 inputEl = void 0;
 
             var _props = this.props,

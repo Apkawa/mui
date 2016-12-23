@@ -2020,6 +2020,14 @@ th {
   opacity: 1;
 }
 
+.mui-textfield > input.mui--is-empty::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.mui-textfield > input.mui--is-empty:focus::-webkit-datetime-edit {
+  color: #000;
+}
+
 .mui-textfield > input {
   height: 32px;
 }

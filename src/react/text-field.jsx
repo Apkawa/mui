@@ -91,7 +91,7 @@ class Input extends React.Component {
 
     render() {
         let cls = {},
-            isNotEmpty = Boolean(this.state.innerValue.toString()),
+            isNotEmpty = Boolean((this.state.innerValue || "").toString()),
             inputEl;
 
         const {hint, invalid, rows, type, renderInput, ...reactProps} = this.props;

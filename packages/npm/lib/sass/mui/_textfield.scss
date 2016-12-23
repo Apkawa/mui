@@ -4,8 +4,6 @@
 
 $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
 
-
-
 // ============================================================================
 // TEXTFIELD
 // ============================================================================
@@ -49,7 +47,7 @@ $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
     text-overflow: clip;
 
     // Cursor
-    cursor: text;  // for ie10
+    cursor: text; // for ie10
     pointer-events: none;
   }
 
@@ -117,13 +115,25 @@ $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
   &:read-only {
     cursor: $mui-cursor-disabled;
     background-color: $mui-input-bg-color-disabled;
-    opacity: 1;  // iOS fix for unreadable disabled content
+    opacity: 1; // iOS fix for unreadable disabled content
   }
 
   &::placeholder {
     color: $mui-input-placeholder-color;
-    opacity: 1;  // Normalize firefox
+    opacity: 1; // Normalize firefox
   }
+
+}
+
+.mui-textfield > input.mui--is-empty {
+  // Fix for naitive chrome datetime
+  &::-webkit-datetime-edit {
+    color: transparent;
+  }
+  &:focus::-webkit-datetime-edit {
+    color: #000;
+  }
+
 }
 
 .mui-textfield > input {
@@ -150,9 +160,6 @@ $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
   height: $mui-input-height + 1px;
   margin-bottom: -1px;
 }
-
-
-
 
 // ============================================================================
 // FORM VALIDATION
