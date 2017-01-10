@@ -4,7 +4,6 @@
 
 $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
 
-
 .mui-select {
   display: block;
   padding-top: $xFormLabelLineHeight;
@@ -49,7 +48,7 @@ $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
     padding: 0 25px 0 0;
 
     &::-ms-expand {
-      display: none;  // For IE
+      display: none; // For IE
     }
 
     &:focus {
@@ -64,7 +63,7 @@ $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
       color: mui-color('black-alpha-38');
       cursor: $mui-cursor-disabled;
       background-color: $mui-input-bg-color-disabled;
-      opacity: 1;  // iOS fix for unreadable disabled content
+      opacity: 1; // iOS fix for unreadable disabled content
     }
 
     // disable focus ring in Firefox
@@ -141,4 +140,47 @@ $xFormLabelLineHeight: floor($mui-label-font-size * 1.25);
 .mui-optgroup__label {
   color: $mui-text-dark-secondary;
   font-size: 0.9em;
+}
+
+.mui-select--float-label {
+  > label {
+    // Layout
+    position: absolute;
+    transform: translate(0px, $xFormLabelLineHeight);
+
+    // Typography
+    font-size: $mui-input-font-size;
+    line-height: $mui-input-height;
+    color: $mui-input-placeholder-color;
+
+    // Overflow policy
+    text-overflow: clip;
+
+    // Cursor
+    cursor: text; // for ie10
+    pointer-events: none;
+  }
+
+  > select {
+    &:focus ~ label {
+      transform: translate(0px, 0px);
+      font-size: $mui-label-font-size;
+      line-height: $xFormLabelLineHeight;
+      text-overflow: ellipsis;
+    }
+
+    &:not(:focus) {
+      &.mui--is-not-empty,
+      &[value]:not([value=""]):not(.mui--is-empty):not(.mui--is-not-empty),
+      &:not(:empty):not(.mui--is-empty):not(.mui--is-not-empty) {
+        ~ label {
+          color: $mui-label-font-color;
+          font-size: $mui-label-font-size;
+          line-height: $xFormLabelLineHeight;
+          transform: translate(0px, 0px);
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
 }

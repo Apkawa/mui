@@ -29,7 +29,7 @@ class Input extends React.Component {
 
         this.state = {
             innerValue: innerValue,
-            isDirty: Boolean(innerValue.toString())
+            isDirty: Boolean((innerValue || "").toString())
         };
 
         // warn if value defined but onChange is not
@@ -100,6 +100,7 @@ class Input extends React.Component {
         cls['mui--is-not-empty'] = isNotEmpty;
         cls['mui--is-dirty'] = this.state.isDirty;
         cls['mui--is-invalid'] = invalid;
+
 
         cls = util.classNames(cls);
 

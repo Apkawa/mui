@@ -1771,6 +1771,32 @@ h4, h5, h6 {
   font-size: 0.9em;
 }
 
+.mui-select--float-label > label {
+  position: absolute;
+  transform: translate(0px, 15px);
+  font-size: 16px;
+  line-height: 32px;
+  color: rgba(0, 0, 0, 0.26);
+  text-overflow: clip;
+  cursor: text;
+  pointer-events: none;
+}
+
+.mui-select--float-label > select:focus ~ label {
+  transform: translate(0px, 0px);
+  font-size: 12px;
+  line-height: 15px;
+  text-overflow: ellipsis;
+}
+
+.mui-select--float-label > select:not(:focus).mui--is-not-empty ~ label, .mui-select--float-label > select:not(:focus)[value]:not([value=""]):not(.mui--is-empty):not(.mui--is-not-empty) ~ label, .mui-select--float-label > select:not(:focus):not(:empty):not(.mui--is-empty):not(.mui--is-not-empty) ~ label {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 12px;
+  line-height: 15px;
+  transform: translate(0px, 0px);
+  text-overflow: ellipsis;
+}
+
 /**
  * MUI Table Component
  */
@@ -2018,6 +2044,14 @@ th {
 .mui-textfield > textarea::placeholder {
   color: rgba(0, 0, 0, 0.26);
   opacity: 1;
+}
+
+.mui-textfield > input.mui--is-empty::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.mui-textfield > input.mui--is-empty:focus::-webkit-datetime-edit {
+  color: #000;
 }
 
 .mui-textfield > input {

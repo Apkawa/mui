@@ -43,7 +43,7 @@ var Input = function (_React$Component) {
 
         _this.state = {
             innerValue: innerValue,
-            isDirty: Boolean(innerValue.toString())
+            isDirty: Boolean((innerValue || "").toString())
         };
 
         // warn if value defined but onChange is not
