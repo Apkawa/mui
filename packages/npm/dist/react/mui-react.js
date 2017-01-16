@@ -2702,7 +2702,16 @@ var Select = function (_React$Component) {
             util.raiseError(_helpers.controlledMessage, true);
         }
 
-        _this.state.value = props.value;
+        var required = props.required,
+            value = props.value,
+            children = props.children;
+
+
+        _this.state.value = value;
+        if (value === undefined && required && children.length > 0) {
+
+            _this.state.value = children[0].props.value;
+        }
 
         // bind callback function
         var cb = util.callback;

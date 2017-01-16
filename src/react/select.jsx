@@ -32,7 +32,14 @@ class Select extends React.Component {
             util.raiseError(controlledMessage, true);
         }
 
-        this.state.value = props.value;
+        const {required, value, children} = props
+
+        this.state.value = value;
+        if (value === undefined && required && children.length > 0) {
+
+            this.state.value = children[0].props.value
+        }
+
 
         // bind callback function
         let cb = util.callback;
@@ -48,7 +55,7 @@ class Select extends React.Component {
     }
 
     state = {
-        showMenu: false
+        showMenu: false,
     };
 
     static propTypes = {

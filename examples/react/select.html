@@ -172,30 +172,43 @@
     }
 
     class Example5 extends React.Component {
-        onBlur(ev) {
-            console.log('[Example 5] onblur: ' + ev.target);
-        }
-
-        onChange(ev) {
-            console.log('[Example 5] onchange: ' + ev.target.value);
-        }
-
-        onFocus(ev) {
-            console.log('[Example 5] onfocus: ' + ev.target);
-        }
 
         render() {
             return (
-                    <Select
-                            name="example3"
-                            label="Select empty"
-                            floatingLabel={true}
-                            required={false}
-                    >
-                        <Option label="Option 1" value="opt1"/>
-                        <Option label="Option 2" value="opt2"/>
-                        <Option label="Option 3" value="opt3"/>
-                    </Select>
+                    <div>
+                        <Select
+                                name="example5"
+                                label="Select empty"
+                                floatingLabel={true}
+                                required={false}
+                        >
+                            <Option label="Option 1" value="opt1"/>
+                            <Option label="Option 2" value="opt2"/>
+                            <Option label="Option 3" value="opt3"/>
+                        </Select>
+                        <Select
+                                name="example7"
+                                label="Select required"
+                                floatingLabel={true}
+                                required={true}
+                        >
+                            <Option label="Option 1" value="opt1"/>
+                            <Option label="Option 2" value="opt2"/>
+                            <Option label="Option 3" value="opt3"/>
+                        </Select>
+
+                        <Select
+                                name="example6"
+                                label="Select with default"
+                                floatingLabel={true}
+                                required={false}
+                                value="opt2"
+                        >
+                            <Option label="Option 1" value="opt1"/>
+                            <Option label="Option 2" value="opt2"/>
+                            <Option label="Option 3" value="opt3"/>
+                        </Select>
+                    </div>
             );
         }
     }
