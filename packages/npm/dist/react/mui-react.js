@@ -2808,7 +2808,7 @@ var Select = function (_React$Component) {
     }
   }, {
     key: 'showMenu',
-    value: function showMenu() {
+    value: function showMenu(ev) {
       // check useDefault flag
       if (this.props.useDefault) return;
 
@@ -2821,7 +2821,12 @@ var Select = function (_React$Component) {
     }
   }, {
     key: 'hideMenu',
-    value: function hideMenu() {
+    value: function hideMenu(ev) {
+      var target = ev.target;
+
+      if (this.refs.menu && target.offsetParent == this.refs.menu.refs.wrapperEl && target.hasAttribute('disabled')) {
+        return;
+      }
       // remove event listeners
       jqLite.off(window, 'resize', this.hideMenuCB);
       jqLite.off(document, 'click', this.hideMenuCB);
@@ -2850,6 +2855,7 @@ var Select = function (_React$Component) {
 
       if (this.state.showMenu) {
         menuElem = _react2.default.createElement(Menu, {
+          ref: 'menu',
           optionEls: this.refs.selectEl.children,
           wrapperEl: this.refs.wrapperEl,
           onChange: this.onMenuChangeCB,
@@ -2985,15 +2991,17 @@ var Menu = function (_React$Component2) {
   babelHelpers.createClass(Menu, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      var optionEls = this.props.optionEls,
-          m = optionEls.length,
-          selectedPos = 0,
-          i = void 0;
+      var optionEls = this.props.optionEls;
+
+      var selectedPos = 0;
 
       // get current selected position
-      for (i = m - 1; i > -1; i--) {
-        if (optionEls[i].selected) selectedPos = i;
-      }this.setState({ origIndex: selectedPos, currentIndex: selectedPos });
+      for (var i = optionEls.length - 1; i > -1; i--) {
+        if (optionEls[i].selected) {
+          selectedPos = i;
+        }
+      }
+      this.setState({ origIndex: selectedPos, currentIndex: selectedPos });
     }
   }, {
     key: 'componentDidMount',
@@ -3045,13 +3053,17 @@ var Menu = function (_React$Component2) {
   }, {
     key: 'increment',
     value: function increment() {
-      if (this.state.currentIndex === this.props.optionEls.length - 1) return;
+      if (this.state.currentIndex === this.props.optionEls.length - 1) {
+        return;
+      }
       this.setState({ currentIndex: this.state.currentIndex + 1 });
     }
   }, {
     key: 'decrement',
     value: function decrement() {
-      if (this.state.currentIndex === 0) return;
+      if (this.state.currentIndex === 0) {
+        return;
+      }
       this.setState({ currentIndex: this.state.currentIndex - 1 });
     }
   }, {
@@ -3059,9 +3071,14 @@ var Menu = function (_React$Component2) {
     value: function selectAndDestroy(pos) {
       pos = pos === undefined ? this.state.currentIndex : pos;
 
+      var optEl = this.props.optionEls[pos];
+      if (optEl.disabled) {
+        return;
+      }
+
       // handle onChange
       if (pos !== this.state.origIndex) {
-        this.props.onChange(this.props.optionEls[pos].value);
+        this.props.onChange(optEl.value);
       }
 
       // close menu
@@ -3075,28 +3092,44 @@ var Menu = function (_React$Component2) {
   }, {
     key: 'render',
     value: function render() {
-      var menuItems = [],
-          optionEls = this.props.optionEls,
-          m = optionEls.length,
-          optionEl = void 0,
-          cls = void 0,
-          i = void 0;
+      var optionEls = this.props.optionEls;
+      var currentIndex = this.state.currentIndex;
+
+
+      var menuItems = [];
+      var cls = void 0;
 
       // define menu items
-      for (i = 0; i < m; i++) {
-        cls = i === this.state.currentIndex ? 'mui--is-selected ' : '';
+      for (var i = 0; i < optionEls.length; i++) {
+        var optEl = optionEls[i];
+        var extraProps = {
+          onClick: this.onClick.bind(this, i)
+        };
+        cls = '';
+
+        if (i === currentIndex) {
+          cls = 'mui--is-selected ';
+        }
+        if (optEl.disabled) {
+          cls += 'mui--is-disabled';
+          extraProps.disabled = true;
+          extraProps.onClick = function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            console.debug('DISABLED');
+          };
+        }
 
         // add custom css class from <Option> component
-        cls += optionEls[i].className;
+        cls += optEl.className;
 
         menuItems.push(_react2.default.createElement(
           'div',
-          {
+          babelHelpers.extends({
             key: i,
-            className: cls,
-            onClick: this.onClick.bind(this, i)
-          },
-          optionEls[i].textContent
+            className: cls
+          }, extraProps),
+          optEl.textContent
         ));
       }
 
@@ -3113,6 +3146,12 @@ var Menu = function (_React$Component2) {
 /** Define module API */
 
 
+Menu.propTypes = {
+  optionEls: PropTypes.arrayOf(PropTypes.element),
+  wrapperEl: PropTypes.element,
+  onChange: PropTypes.func,
+  onClose: PropTypes.func
+};
 Menu.defaultProps = {
   optionEls: [],
   wrapperEl: null,

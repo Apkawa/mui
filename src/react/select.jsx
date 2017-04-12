@@ -155,7 +155,7 @@ class Select extends React.Component {
     }
   }
 
-  showMenu () {
+  showMenu (ev) {
     // check useDefault flag
     if (this.props.useDefault) return
 
@@ -167,7 +167,14 @@ class Select extends React.Component {
     this.setState({showMenu: true})
   }
 
-  hideMenu () {
+  hideMenu (ev) {
+    const target = ev.target
+
+    if (this.refs.menu
+      && target.offsetParent == this.refs.menu.refs.wrapperEl
+      && target.hasAttribute('disabled')) {
+      return
+    }
     // remove event listeners
     jqLite.off(window, 'resize', this.hideMenuCB)
     jqLite.off(document, 'click', this.hideMenuCB)
@@ -194,6 +201,7 @@ class Select extends React.Component {
     if (this.state.showMenu) {
       menuElem = (
         <Menu
+          ref="menu"
           optionEls={this.refs.selectEl.children}
           wrapperEl={this.refs.wrapperEl}
           onChange={this.onMenuChangeCB}
@@ -273,7 +281,12 @@ class Menu extends React.Component {
     origIndex: null,
     currentIndex: null,
   }
-
+  static propTypes = {
+    optionEls: PropTypes.arrayOf(PropTypes.element),
+    wrapperEl: PropTypes.element,
+    onChange: PropTypes.func,
+    onClose: PropTypes.func,
+  }
   static defaultProps = {
     optionEls: [],
     wrapperEl: null,
@@ -282,13 +295,15 @@ class Menu extends React.Component {
   }
 
   componentWillMount () {
-    let optionEls = this.props.optionEls,
-      m = optionEls.length,
-      selectedPos = 0,
-      i
+    const {optionEls} = this.props
+    let selectedPos = 0
 
     // get current selected position
-    for (i = m - 1; i > -1; i--) if (optionEls[i].selected) selectedPos = i
+    for (let i = optionEls.length - 1; i > -1; i--) {
+      if (optionEls[i].selected) {
+        selectedPos = i
+      }
+    }
     this.setState({origIndex: selectedPos, currentIndex: selectedPos})
   }
 
@@ -343,21 +358,30 @@ class Menu extends React.Component {
   }
 
   increment () {
-    if (this.state.currentIndex === this.props.optionEls.length - 1) return
+    if (this.state.currentIndex === this.props.optionEls.length - 1) {
+      return
+    }
     this.setState({currentIndex: this.state.currentIndex + 1})
   }
 
   decrement () {
-    if (this.state.currentIndex === 0) return
+    if (this.state.currentIndex === 0) {
+      return
+    }
     this.setState({currentIndex: this.state.currentIndex - 1})
   }
 
   selectAndDestroy (pos) {
     pos = (pos === undefined) ? this.state.currentIndex : pos
 
+    const optEl = this.props.optionEls[pos]
+    if (optEl.disabled) {
+      return
+    }
+
     // handle onChange
     if (pos !== this.state.origIndex) {
-      this.props.onChange(this.props.optionEls[pos].value)
+      this.props.onChange(optEl.value)
     }
 
     // close menu
@@ -369,27 +393,43 @@ class Menu extends React.Component {
   }
 
   render () {
-    let menuItems = [],
-      optionEls = this.props.optionEls,
-      m = optionEls.length,
-      optionEl,
-      cls,
-      i
+    const {optionEls} = this.props
+    const {currentIndex} = this.state
+
+    let menuItems = []
+    let cls
 
     // define menu items
-    for (i = 0; i < m; i++) {
-      cls = (i === this.state.currentIndex) ? 'mui--is-selected ' : ''
+    for (let i = 0; i < optionEls.length; i++) {
+      const optEl = optionEls[i]
+      const extraProps = {
+        onClick: this.onClick.bind(this, i),
+      }
+      cls = ''
+
+      if (i === currentIndex) {
+        cls = 'mui--is-selected '
+      }
+      if (optEl.disabled) {
+        cls += 'mui--is-disabled'
+        extraProps.disabled = true
+        extraProps.onClick = (ev) => {
+          ev.preventDefault()
+          ev.stopPropagation()
+          console.debug('DISABLED')
+        }
+      }
 
       // add custom css class from <Option> component
-      cls += optionEls[i].className
+      cls += optEl.className
 
       menuItems.push(
         <div
           key={i}
           className={cls}
-          onClick={this.onClick.bind(this, i)}
+          {...extraProps}
         >
-          {optionEls[i].textContent}
+          {optEl.textContent}
         </div>,
       )
     }

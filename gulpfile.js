@@ -167,7 +167,7 @@ function buildCdnCss(dirname) {
       .pipe(plugins.cssmin({advanced: false}))
       .pipe(plugins.rename('mui-rtl.min.css'))
       .pipe(gulp.dest(dirname));
-    
+
     return mergeStream(stream1, stream2);
   });
 }
