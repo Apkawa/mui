@@ -3204,16 +3204,30 @@ var PropTypes = _react2.default.PropTypes,
 var Tabs = function (_React$Component) {
   babelHelpers.inherits(Tabs, _React$Component);
 
-  function Tabs(props) {
+  function Tabs() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     babelHelpers.classCallCheck(this, Tabs);
 
-    var _this = babelHelpers.possibleConstructorReturn(this, (Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call(this, props));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-    _this.state = { currentSelectedIndex: props.initialSelectedIndex };
-    return _this;
+    return _ret = (_temp = (_this = babelHelpers.possibleConstructorReturn(this, (_ref = Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      currentSelectedIndex: _this.props.initialSelectedIndex
+    }, _temp), babelHelpers.possibleConstructorReturn(_this, _ret);
   }
 
   babelHelpers.createClass(Tabs, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (this.props.initialSelectedIndex !== nextProps.initialSelectedIndex) {
+        this.setState({ currentSelectedIndex: nextProps.initialSelectedIndex });
+      }
+    }
+  }, {
     key: 'onClick',
     value: function onClick(i, tab, ev) {
       if (i !== this.state.currentSelectedIndex) {

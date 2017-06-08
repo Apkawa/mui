@@ -55,7 +55,7 @@ class Select extends React.Component {
   }
 
   state = {
-    showMenu: false,
+    showMenu: false
   }
 
   static propTypes = {
@@ -71,7 +71,7 @@ class Select extends React.Component {
 
     floatingLabel: PropTypes.bool,
     required: PropTypes.bool,
-    emptyOption: PropTypes.element,
+    emptyOption: PropTypes.element
   }
 
   static defaultProps = {
@@ -82,7 +82,7 @@ class Select extends React.Component {
     onChange: null,
     onClick: null,
     onKeyDown: null,
-    emptyOption: <Option value="" label=""/>,
+    emptyOption: <Option value="" label=""/>
   }
 
   componentDidMount () {
@@ -91,7 +91,9 @@ class Select extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.setState({value: nextProps.value})
+    if (typeof nextProps.value !== 'undefined') {
+      this.setState({value: nextProps.value})
+    }
   }
 
   componentWillUnmount () {
@@ -171,7 +173,7 @@ class Select extends React.Component {
     const target = ev.target
 
     if (this.refs.menu
-      && target.offsetParent == this.refs.menu.refs.wrapperEl
+      && target.offsetParent === this.refs.menu.refs.wrapperEl
       && target.hasAttribute('disabled')) {
       return
     }
@@ -229,10 +231,12 @@ class Select extends React.Component {
     cls['mui-select ' + className] = true
     cls['mui-select--float-label'] = floatingLabel
 
+    const emptyOption = required ? null : this.props.emptyOption
+
     const isNotEmpty = Boolean((value || '').toString())
 
     input_cls['mui--is-empty'] = !isNotEmpty
-    input_cls['mui--is-not-empty'] = isNotEmpty
+    input_cls['mui--is-not-empty'] = isNotEmpty || !emptyOption
     input_cls['mui--is-invalid'] = invalid
 
     return (
@@ -279,19 +283,19 @@ class Menu extends React.Component {
 
   state = {
     origIndex: null,
-    currentIndex: null,
+    currentIndex: null
   }
   static propTypes = {
     optionEls: PropTypes.arrayOf(PropTypes.element),
     wrapperEl: PropTypes.element,
     onChange: PropTypes.func,
-    onClose: PropTypes.func,
+    onClose: PropTypes.func
   }
   static defaultProps = {
     optionEls: [],
     wrapperEl: null,
     onChange: null,
-    onClose: null,
+    onClose: null
   }
 
   componentWillMount () {
@@ -315,7 +319,7 @@ class Menu extends React.Component {
     let props = formlib.getMenuPositionalCSS(
       this.props.wrapperEl,
       this.props.optionEls.length,
-      this.state.currentIndex,
+      this.state.currentIndex
     )
 
     let el = this.refs.wrapperEl
@@ -337,7 +341,7 @@ class Menu extends React.Component {
   onClick (pos, ev) {
     // don't allow events to bubble
     ev.stopPropagation()
-    this.selectAndDestroy(pos)
+    this.selectAndDestroy(pos, ev)
   }
 
   onKeyDown (ev) {
@@ -371,7 +375,7 @@ class Menu extends React.Component {
     this.setState({currentIndex: this.state.currentIndex - 1})
   }
 
-  selectAndDestroy (pos) {
+  selectAndDestroy (pos, ev) {
     pos = (pos === undefined) ? this.state.currentIndex : pos
 
     const optEl = this.props.optionEls[pos]
@@ -385,11 +389,11 @@ class Menu extends React.Component {
     }
 
     // close menu
-    this.destroy()
+    this.destroy(ev)
   }
 
-  destroy () {
-    this.props.onClose()
+  destroy (ev) {
+    this.props.onClose(ev)
   }
 
   render () {
@@ -403,7 +407,7 @@ class Menu extends React.Component {
     for (let i = 0; i < optionEls.length; i++) {
       const optEl = optionEls[i]
       const extraProps = {
-        onClick: this.onClick.bind(this, i),
+        onClick: this.onClick.bind(this, i)
       }
       cls = ''
 
@@ -430,7 +434,7 @@ class Menu extends React.Component {
           {...extraProps}
         >
           {optEl.textContent}
-        </div>,
+        </div>
       )
     }
 

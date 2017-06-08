@@ -1,6 +1,6 @@
 {
   "name": "apkawa-muicss",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "license": "MIT",
   "description": "Source code for MUI",
   "homepage": "https://www.muicss.com",
@@ -13,7 +13,13 @@
     "url": "https://github.com/muicss/mui.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "serve": "yarn",
+    "build:examples": "gulp examples:build",
+    "build": "gulp build-packages",
+    "prepublish": "npm build",
+    "publish:npm": "npm build && cd packages/npm/ && npm publish"
+
   },
   "devDependencies": {
     "angular": "^1.6.0",
@@ -65,9 +71,11 @@
     "synthetic-dom-events": "^0.3.0",
     "vinyl-source-stream": "^1.1.0",
     "whatwg-url-compat": "^0.6.5",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "node-sass": "^4.5.3"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "engines": {
     "npm": ">=3.3.12"
   },

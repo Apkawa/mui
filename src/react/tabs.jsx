@@ -5,79 +5,84 @@
 /* jshint quotmark:false */
 // jscs:disable validateQuoteMarks
 
-'use strict';
+'use strict'
 
-import React from 'react';
+import React from 'react'
 
-import Tab from './tab';
-import * as util from '../js/lib/util';
-
+import Tab from './tab'
+import * as util from '../js/lib/util'
 
 const PropTypes = React.PropTypes,
-      tabsBarClass = 'mui-tabs__bar',
-      tabsBarJustifiedClass = 'mui-tabs__bar--justified',
-      tabsPaneClass = 'mui-tabs__pane',
-      isActiveClass = 'mui--is-active';
-
+  tabsBarClass = 'mui-tabs__bar',
+  tabsBarJustifiedClass = 'mui-tabs__bar--justified',
+  tabsPaneClass = 'mui-tabs__pane',
+  isActiveClass = 'mui--is-active'
 
 /**
  * Tabs constructor
  * @class
  */
 class Tabs extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {currentSelectedIndex: props.initialSelectedIndex};
-  }
-
   static propTypes = {
     initialSelectedIndex: PropTypes.number,
     justified: PropTypes.bool,
-    onChange: PropTypes.func
-  };
+    onChange: PropTypes.func,
+  }
 
   static defaultProps = {
     className: '',
     initialSelectedIndex: 0,
     justified: false,
-    onChange: null
-  };
+    onChange: null,
+  }
 
-  onClick(i, tab, ev) {
+  state = {
+    currentSelectedIndex: this.props.initialSelectedIndex,
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.initialSelectedIndex !== nextProps.initialSelectedIndex) {
+      this.setState({currentSelectedIndex: nextProps.initialSelectedIndex})
+    }
+  }
+
+  onClick (i, tab, ev) {
     if (i !== this.state.currentSelectedIndex) {
-      this.setState({currentSelectedIndex: i});
+      this.setState({currentSelectedIndex: i})
 
       // onActive callback
-      if (tab.props.onActive) tab.props.onActive(tab);
+      if (tab.props.onActive) tab.props.onActive(tab)
 
       // onChange callback
       if (this.props.onChange) {
-        this.props.onChange(i, tab.props.value, tab, ev);
+        this.props.onChange(i, tab.props.value, tab, ev)
       }
     }
   }
 
-  render() {
-    const { children, initialSelectedIndex, justified,
-      ...reactProps } = this.props;
+  render () {
+    const {
+      children, initialSelectedIndex, justified,
+      ...reactProps
+    } = this.props
 
-    let tabs = Array.isArray(children) ? children : [children];
+    let tabs = Array.isArray(children) ? children : [children]
     let tabEls = [],
-        paneEls = [],
-        m = tabs.length,
-        selectedIndex = this.state.currentSelectedIndex % m,
-        isActive,
-        item,
-        cls,
-        i;
+      paneEls = [],
+      m = tabs.length,
+      selectedIndex = this.state.currentSelectedIndex % m,
+      isActive,
+      item,
+      cls,
+      i
 
-    for (i=0; i < m; i++) {
-      item = tabs[i];
+    for (i = 0; i < m; i++) {
+      item = tabs[i]
 
       // only accept MUITab elements
-      if (item.type !== Tab) util.raiseError('Expecting MUITab React Element');
+      if (item.type !== Tab) util.raiseError('Expecting MUITab React Element')
 
-      isActive = (i === selectedIndex) ? true : false;
+      isActive = (i === selectedIndex) ? true : false
 
       // tab element
       tabEls.push(
@@ -85,22 +90,22 @@ class Tabs extends React.Component {
           <a onClick={this.onClick.bind(this, i, item)}>
             {item.props.label}
           </a>
-        </li>
-      );
+        </li>,
+      )
 
       // pane element
-      cls = tabsPaneClass + ' ';
-      if (isActive) cls += isActiveClass;
+      cls = tabsPaneClass + ' '
+      if (isActive) cls += isActiveClass
 
       paneEls.push(
         <div key={i} className={cls}>
           {item.props.children}
-        </div>
-      );
+        </div>,
+      )
     }
 
-    cls = tabsBarClass;
-    if (justified) cls += ' ' + tabsBarJustifiedClass;
+    cls = tabsBarClass
+    if (justified) cls += ' ' + tabsBarJustifiedClass
 
     return (
       <div { ...reactProps }>
@@ -109,10 +114,9 @@ class Tabs extends React.Component {
         </ul>
         {paneEls}
       </div>
-    );
+    )
   }
 }
 
-
 /** Define module API */
-export default Tabs;
+export default Tabs

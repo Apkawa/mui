@@ -168,7 +168,10 @@
   }
 
   class Example5 extends React.Component {
-
+    constructor () {
+      super()
+      this.state = {}
+    }
     render () {
       return (
               <div>
@@ -210,11 +213,13 @@
                           floatingLabel={true}
                           required={false}
                           value="opt2"
+                          onChange={(ev) => {this.setState({example_8_value: ev.target.value})}}
                   >
                       <Option label="Option 1" value="opt1"/>
-                      <Option label="Option 2" value="opt2" readonly />
-                      <Option label="Option 3" value="opt3" disabled />
+                      <Option label="Option 2" value="opt2" readonly/>
+                      <Option label="Option 3" value="opt3" disabled/>
                   </Select>
+                  <pre>Value: {this.state.example_8_value}</pre>
               </div>
       );
     }
