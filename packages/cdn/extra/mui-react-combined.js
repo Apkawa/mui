@@ -2763,7 +2763,9 @@ var Select = function (_React$Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      this.setState({ value: nextProps.value });
+      if (typeof nextProps.value !== 'undefined') {
+        this.setState({ value: nextProps.value });
+      }
     }
   }, {
     key: 'componentWillUnmount',
@@ -2849,7 +2851,7 @@ var Select = function (_React$Component) {
     value: function hideMenu(ev) {
       var target = ev.target;
 
-      if (this.refs.menu && target.offsetParent == this.refs.menu.refs.wrapperEl && target.hasAttribute('disabled')) {
+      if (this.refs.menu && target.offsetParent === this.refs.menu.refs.wrapperEl && target.hasAttribute('disabled')) {
         return;
       }
       // remove event listeners
@@ -2917,10 +2919,12 @@ var Select = function (_React$Component) {
       cls['mui-select ' + className] = true;
       cls['mui-select--float-label'] = floatingLabel;
 
+      var emptyOption = required ? null : this.props.emptyOption;
+
       var isNotEmpty = Boolean((value || '').toString());
 
       input_cls['mui--is-empty'] = !isNotEmpty;
-      input_cls['mui--is-not-empty'] = isNotEmpty;
+      input_cls['mui--is-not-empty'] = isNotEmpty || !emptyOption;
       input_cls['mui--is-invalid'] = invalid;
 
       return _react2.default.createElement(
@@ -3058,7 +3062,7 @@ var Menu = function (_React$Component2) {
     value: function onClick(pos, ev) {
       // don't allow events to bubble
       ev.stopPropagation();
-      this.selectAndDestroy(pos);
+      this.selectAndDestroy(pos, ev);
     }
   }, {
     key: 'onKeyDown',
@@ -3093,7 +3097,7 @@ var Menu = function (_React$Component2) {
     }
   }, {
     key: 'selectAndDestroy',
-    value: function selectAndDestroy(pos) {
+    value: function selectAndDestroy(pos, ev) {
       pos = pos === undefined ? this.state.currentIndex : pos;
 
       var optEl = this.props.optionEls[pos];
@@ -3107,12 +3111,12 @@ var Menu = function (_React$Component2) {
       }
 
       // close menu
-      this.destroy();
+      this.destroy(ev);
     }
   }, {
     key: 'destroy',
-    value: function destroy() {
-      this.props.onClose();
+    value: function destroy(ev) {
+      this.props.onClose(ev);
     }
   }, {
     key: 'render',
